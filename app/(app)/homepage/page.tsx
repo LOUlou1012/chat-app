@@ -40,17 +40,39 @@ export default function Home() {
 
   if (!currentUser)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-emerald-900 text-white">
-        Loading...
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-900 via-emerald-800 to-green-900 text-white">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-400"></div>
+          <p className="text-emerald-200 animate-pulse">Loading Kalbe Chat...</p>
+        </div>
       </div>
     );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-emerald-800 to-green-900 p-6">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-8 tracking-wide">
-          Welcome, <span className="text-emerald-300">{profile?.username}</span>
-        </h1>
+        
+        {/* Header Branding Section */}
+        <div className="flex flex-col items-center justify-center py-10 space-y-6">
+          <div className="p-5 bg-white/5 rounded-full ring-1 ring-white/10 shadow-2xl backdrop-blur-sm">
+            <img src="/kalbe_icon-removebg-preview.png" alt="Kalbe Logo" className="w-24 h-24 object-contain drop-shadow-lg" />
+          </div>
+          <div className="text-center space-y-2">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-xl">
+              Welcome to <span className="text-emerald-400">Kalbe Chat</span>
+            </h1>
+            <p className="text-emerald-200/60 text-xs md:text-sm font-bold tracking-[0.2em] uppercase">
+              (communication app for kalbe team)
+            </p>
+          </div>
+        </div>
+
+        <div className="mb-8 flex items-center gap-3 px-2">
+          <div className="h-8 w-1.5 bg-gradient-to-b from-emerald-400 to-green-600 rounded-full"></div>
+          <h2 className="text-2xl font-bold text-white">
+            Hello, <span className="text-emerald-300">{profile?.username}</span>
+          </h2>
+        </div>
 
         <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/10">
           <h2 className="text-xl font-semibold text-emerald-100 mb-6">
