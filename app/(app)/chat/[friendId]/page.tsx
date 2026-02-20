@@ -3,6 +3,19 @@
 import { useEffect, useState, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Button,
+  List,
+  ListItem,
+  Paper,
+  TextField,
+  Toolbar,
+  Typography,
+} from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
 
 export default function ChatPage() {
   const { friendId } = useParams()
@@ -75,72 +88,105 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-emerald-800 to-green-900 p-6 flex items-center justify-center">
-      <div className="w-full max-w-3xl bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 flex flex-col h-[80vh] overflow-hidden">
-        
-        {/* Header */}
-        <div className="p-4 border-b border-white/10 bg-white/5 flex items-center gap-3">
-          <img 
-            src={friendProfile?.profile_pic || '/defaultpp.png'} 
-            className="w-10 h-10 rounded-full object-cover"
-            alt="Friend"
-          />
-          <h2 className="text-white font-bold text-lg">{friendProfile?.username || 'Loading...'}</h2>
-        </div>
+    <Box sx={{
+      minHeight: 'calc(100vh - 100px)',
+      background: 'linear-gradient(to bottom right, #064e3b, #065f46, #14532d)',
+      p: { xs: 1, sm: 2, md: 3 },
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}>
+      <Paper
+        elevation={12}
+        sx={{
+          width: '100%',
+          maxWidth: '896px',
+          bgcolor: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(12px)',
+          borderRadius: '24px',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          display: 'flex',
+          flexDirection: 'column',
+          height: '85vh',
+          overflow: 'hidden',
+        }}
+      >
+        <AppBar position="static" sx={{ bgcolor: 'rgba(255, 255, 255, 0.05)', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', boxShadow: 'none' }}>
+          <Toolbar>
+            <Avatar
+              src={friendProfile?.profile_pic || '/defaultpp.png'}
+              alt="Friend"
+              sx={{ width: 40, height: 40, mr: 2 }}
+            />
+            <Typography variant="h6" component="div" sx={{ color: 'white', fontWeight: 'bold' }}>
+              {friendProfile?.username || 'Loading...'}
+            </Typography>
+          </Toolbar>
+        </AppBar>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-6">
-          {messages.map((msg) => {
-            const isMe = msg.sender_id === user?.id
-            const senderProfile = isMe ? myProfile : friendProfile
-            
-            return (
-              <div key={msg.id} className={`flex gap-3 ${isMe ? 'flex-row-reverse' : ''}`}>
-                <img 
-                  src={senderProfile?.profile_pic || '/defaultpp.png'} 
-                  className="w-10 h-10 rounded-full object-cover mt-1"
-                  alt="Avatar"
-                />
-                <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} max-w-[70%]`}>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-emerald-200 text-xs font-medium">
-                      {senderProfile?.username}
-                    </span>
-                    <span className="text-emerald-400/60 text-[10px]">
-                      {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                  </div>
-                  <div className={`px-4 py-2 rounded-2xl text-white text-sm shadow-md ${
-                    isMe 
-                    ? 'bg-emerald-600 rounded-tr-none' 
-                    : 'bg-emerald-800 rounded-tl-none'
-                  }`}>
-                    {msg.content}
-                  </div>
-                </div>
-              </div>
-            )
-          })}
-          <div ref={messagesEndRef} />
-        </div>
+        <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
+          <List>
+            {messages.map((msg) => {
+              const isMe = msg.sender_id === user?.id;
+              const senderProfile = isMe ? myProfile : friendProfile;
 
-        {/* Input */}
-        <div className="p-4 bg-white/5 border-t border-white/10 flex gap-3">
-          <input
+              return (
+                <ListItem key={msg.id} sx={{ display: 'flex', justifyContent: isMe ? 'flex-end' : 'flex-start', p: '4px 0' }}>
+                  <Box sx={{ display: 'flex', gap: 1, flexDirection: isMe ? 'row-reverse' : 'row', alignItems: 'flex-start', maxWidth: '70%' }}>
+                    <Avatar
+                      src={senderProfile?.profile_pic || '/defaultpp.png'}
+                      alt="Avatar"
+                      sx={{ width: 40, height: 40 }}
+                    />
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: isMe ? 'flex-end' : 'flex-start' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                        <Typography variant="caption" sx={{ color: '#a7f3d0', fontWeight: 500 }}>
+                          {senderProfile?.username}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: 'rgba(110, 231, 183, 0.6)', fontSize: '10px' }}>
+                          {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </Typography>
+                      </Box>
+                      <Paper
+                        elevation={3}
+                        sx={{
+                          p: '8px 16px',
+                          bgcolor: isMe ? 'rgb(5, 150, 105)' : 'rgb(6, 95, 70)',
+                          color: 'white',
+                          borderRadius: '20px',
+                          borderTopRightRadius: isMe ? 4 : '20px',
+                          borderTopLeftRadius: isMe ? '20px' : 4,
+                        }}
+                      >
+                        <Typography variant="body2">{msg.content}</Typography>
+                      </Paper>
+                    </Box>
+                  </Box>
+                </ListItem>
+              );
+            })}
+            <div ref={messagesEndRef} />
+          </List>
+        </Box>
+
+        <Box sx={{ p: 2, bgcolor: 'rgba(255, 255, 255, 0.05)', borderTop: '1px solid rgba(255, 255, 255, 0.1)', display: 'flex', gap: 1, alignItems: 'center' }}>
+          <TextField
+            fullWidth
+            variant="outlined"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-            className="flex-1 bg-white/10 text-white placeholder-emerald-200/50 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 outline-none transition"
             placeholder="Type a message..."
+            sx={{
+              '& .MuiOutlinedInput-root': { borderRadius: '12px', bgcolor: 'rgba(255, 255, 255, 0.1)', '& fieldset': { borderColor: 'transparent' }, '&:hover fieldset': { borderColor: 'rgba(110, 231, 183, 0.5)' }, '&.Mui-focused fieldset': { borderColor: 'rgb(110, 231, 183)' } },
+              '& .MuiInputBase-input': { color: 'white', '&::placeholder': { color: 'rgba(167, 243, 208, 0.5)', opacity: 1 } },
+            }}
           />
-          <button
-            onClick={sendMessage}
-            className="bg-emerald-500 hover:bg-emerald-400 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition active:scale-95"
-          >
+          <Button variant="contained" onClick={sendMessage} endIcon={<SendIcon />} sx={{ bgcolor: 'rgb(16, 185, 129)', '&:hover': { bgcolor: 'rgb(52, 211, 153)' }, borderRadius: '12px', px: 3, py: 1.5 }}>
             Send
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </Box>
+      </Paper>
+    </Box>
   )
 }

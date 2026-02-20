@@ -3,6 +3,17 @@
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  List,
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
+  Button,
+  Typography,
+  Paper,
+  Box,
+} from '@mui/material';
 
 export default function Home() {
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -84,50 +95,71 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mb-8 flex items-center gap-3 px-2">
-          <div className="h-8 w-1.5 bg-gradient-to-b from-emerald-400 to-green-600 rounded-full"></div>
-          <h2 className="text-2xl font-bold text-white">
-            Hello, <span className="text-emerald-300">{profile?.username}</span>
-          </h2>
-        </div>
+        <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', gap: 1.5, px: 1 }}>
+          <Box sx={{ height: 32, width: 6, background: 'linear-gradient(to bottom, #34d399, #15803d)', borderRadius: '9999px' }} />
+          <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'white' }}>
+            Hello, <Typography component="span" variant="h4" sx={{ color: '#6ee7b7', fontWeight: 'bold' }}>{profile?.username}</Typography>
+          </Typography>
+        </Box>
 
-        <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/10">
-          <h2 className="text-xl font-semibold text-emerald-100 mb-6">
+        <Paper
+          elevation={6}
+          sx={{
+            bgcolor: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: '24px',
+            p: 3,
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+          }}
+        >
+          <Typography variant="h5" sx={{ color: '#d1fae5', mb: 3, fontWeight: 600 }}>
             Start a Conversation
-          </h2>
+          </Typography>
 
-          <div className="space-y-4">
+          <List sx={{ p: 0 }}>
             {users.map((user) => (
-              <div
+              <ListItem
                 key={user.id}
-                className="group bg-white/5 hover:bg-white/10 border border-white/5 hover:border-emerald-500/30 p-4 rounded-2xl flex justify-between items-center transition-all duration-300"
+                secondaryAction={
+                  <Button
+                    variant="contained"
+                    onClick={() => router.push(`/chat/${user.id}`)}
+                    sx={{ bgcolor: 'rgb(16, 185, 129)', '&:hover': { bgcolor: 'rgb(52, 211, 153)' }, borderRadius: '12px', boxShadow: 'lg', px: 2.5, py: 1 }}
+                  >
+                    Chat
+                  </Button>
+                }
+                sx={{
+                  mb: 2,
+                  bgcolor: 'rgba(255, 255, 255, 0.05)',
+                  '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' },
+                  border: '1px solid rgba(255, 255, 255, 0.05)',
+                  '&:hover .MuiAvatar-root': { borderColor: 'rgb(52, 211, 153)' },
+                  borderRadius: '16px',
+                  transition: 'all 0.3s ease',
+                  p: 2,
+                }}
               >
-                <div className="flex items-center gap-4">
-                  <img
-                    src={user.profile_pic || "/defaultpp.png"}
-                    alt={user.username}
-                    className="w-12 h-12 rounded-full object-cover ring-2 ring-emerald-500/50 group-hover:ring-emerald-400 transition-all"
-                  />
-                  <span className="text-white font-medium text-lg">
-                    {user.username}
-                  </span>
-                </div>
-                <button
-                  onClick={() => router.push(`/chat/${user.id}`)}
-                  className="bg-emerald-500 hover:bg-emerald-400 text-white px-5 py-2 rounded-xl font-medium shadow-lg shadow-emerald-500/20 transition-all active:scale-95"
-                >
-                  Chat
-                </button>
-              </div>
+                <ListItemAvatar>
+                  <Avatar src={user.profile_pic || "/defaultpp.png"} alt={user.username} sx={{ width: 48, height: 48, border: '2px solid rgba(16, 185, 129, 0.5)', transition: 'all 0.3s ease' }} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    <Typography sx={{ color: 'white', fontWeight: 500, fontSize: '1.125rem' }}>
+                      {user.username}
+                    </Typography>
+                  }
+                />
+              </ListItem>
             ))}
 
             {users.length === 0 && (
-              <p className="text-center text-emerald-200/50 py-8">
+              <Typography align="center" sx={{ color: 'rgba(167, 243, 208, 0.5)', py: 4 }}>
                 No other users found.
-              </p>
+              </Typography>
             )}
-          </div>
-        </div>
+          </List>
+        </Paper>
       </div>
     </div>
   );

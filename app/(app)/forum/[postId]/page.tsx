@@ -29,7 +29,7 @@ function buildTree(comments: any[]) {
 /* =========================
    COMMENT COMPONENT
 ========================= */
-function CommentItem({ comment, user, refresh }: any) {
+function CommentItem({ comment, user, refresh, role }: any) {
   const [replyText, setReplyText] = useState("");
   const [showReply, setShowReply] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -45,6 +45,7 @@ function CommentItem({ comment, user, refresh }: any) {
       parent_id: comment.id,
     });
 
+    
     setReplyText("");
     setShowReply(false);
     refresh();
@@ -105,7 +106,7 @@ function CommentItem({ comment, user, refresh }: any) {
                 Reply
               </button>
 
-              {comment.user_id === user?.id && (
+              {(comment.user_id === user?.id || role === "admin")&& (
                 <>
                   <button
                     onClick={() => setIsEditing(!isEditing)}
@@ -152,6 +153,7 @@ function CommentItem({ comment, user, refresh }: any) {
             comment={child}
             user={user}
             refresh={refresh}
+            role={role}
           />
         </div>
       ))}
@@ -172,15 +174,20 @@ export default function PostDetail() {
   const [content, setContent] = useState("");
   const [isEditingPost, setIsEditingPost] = useState(false);
   const [editPostContent, setEditPostContent] = useState("");
+  const [role, setRole] = useState("");
+
 
   useEffect(() => {
     const init = async () => {
       const { data } = await supabase.auth.getUser();
       if (!data.user) return;
 
+      
+
       setUser(data.user);
       fetchPost();
       fetchComments();
+      fetchProfile(data.user.id);
     };
     init();
   }, []);
@@ -195,6 +202,22 @@ export default function PostDetail() {
     setPost(data);
     setEditPostContent(data?.content);
   };
+
+  const fetchProfile = async (userId: string) => {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", userId)
+    .single();
+    setRole(data?.role || "user");
+
+  if (error) {
+    console.error(error.message);
+    return null;
+  }
+
+  return data?.role || "user";
+};
 
   const fetchComments = async () => {
     const { data } = await supabase
@@ -283,14 +306,16 @@ export default function PostDetail() {
             <p className="mb-4 whitespace-pre-wrap text-white/90 leading-relaxed">{post.content}</p>
           )}
 
-          {post.user_id === user?.id && !isEditingPost && (
+          {!isEditingPost && (post.user_id === user?.id || role === "admin") && (
             <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => setIsEditingPost(true)}
-                className="bg-yellow-500/80 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg font-semibold text-sm transition"
-              >
-                Edit Post
-              </button>
+              {post.user_id === user?.id && (
+                <button
+                  onClick={() => setIsEditingPost(true)}
+                  className="bg-yellow-500/80 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg font-semibold text-sm transition"
+                >
+                  Edit Post
+                </button>
+              )}
               <button
                 onClick={handleDeletePost}
                 className="bg-red-500/80 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-semibold text-sm transition"
@@ -330,6 +355,7 @@ export default function PostDetail() {
               key={comment.id}
               comment={comment}
               user={user}
+              role={role}
               refresh={fetchComments}
             />
           ))}
