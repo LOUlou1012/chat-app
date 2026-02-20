@@ -22,14 +22,18 @@ export default function AppLayout({
     <div>
       
       <nav className="sticky top-0 z-50 flex justify-between items-center p-4 border-b bg-[#022c22] text-white">
-        <div className="flex items-center gap-2">
-          <Image src="/kalbe_icon-removebg-preview.png" alt="KalbeLogo" width={32} height={32} />
-          <h1 className="font-bold text-lg">Kalbe Chat</h1>
-        </div>
+        <Link href="/homepage">
+          <div className="flex items-center gap-2">
+            <Image src="/kalbe_icon-removebg-preview.png" alt="KalbeLogo" width={32} height={32} />
+            <h1 className="font-bold text-lg">Kalbe Chat</h1>
+          </div>
+        </Link>
 
         <div className="flex gap-4 items-center">
-          <Link href="/homepage">Home</Link>
+          <Link href="/homepage">Chat</Link>
           <Link href="/profile">Profile</Link>
+          <Link href="/requests">Requests</Link>
+          <Link href="/forum">Forum</Link>
 
           <button
             onClick={handleLogout}

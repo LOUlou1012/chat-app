@@ -26,13 +26,30 @@ export default function Home() {
 
       setProfile(profileData);
 
-      // ambil user lain
-      const { data } = await supabase
-        .from("profiles")
+            // ambil semua friendship yg melibatkan current user
+      const { data: friendships } = await supabase
+        .from("friendships")
         .select("*")
-        .neq("id", userData.user.id);
+        .or(`user1.eq.${userData.user.id},user2.eq.${userData.user.id}`);
 
-      setUsers(data || []);
+      if (!friendships) return;
+
+      const friendIds = friendships.map((f) =>
+        f.user1 === userData.user.id ? f.user2 : f.user1
+      );
+
+      // ambil profile teman
+      if (friendIds.length > 0) {
+        const { data: friends } = await supabase
+          .from("profiles")
+          .select("*")
+          .in("id", friendIds);
+
+        setUsers(friends || []);
+      } else {
+        setUsers([]);
+      }
+
     };
 
     fetchData();
