@@ -39,7 +39,7 @@ export default function AppLayout({
   return (
     <div>
       <nav className="sticky top-0 z-50 flex justify-between items-center p-4 border-b bg-[#022c22] text-white">
-        <Link href="/homepage">
+        <Link href="/forum">
           <div className="flex items-center gap-2">
             <Image
               src="/kalbe_icon-removebg-preview.png"
